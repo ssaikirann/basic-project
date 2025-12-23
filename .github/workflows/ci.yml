@@ -15,5 +15,11 @@ jobs:
       - name: Run a simple script
         run: echo "Hello Sai, your pipeline is running!"
 
+      - name: Make script executable
+        run: chmod +x scripts/ubuntu_checks.sh
+
+      - name: Run Ubuntu system checks
+        run: bash scripts/ubuntu_checks.sh
+
       - name: List files
         run: ls -la
