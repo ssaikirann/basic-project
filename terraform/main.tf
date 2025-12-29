@@ -55,7 +55,7 @@ resource "local_file" "k8s_config_dir" {
 # Kubernetes Namespace
 resource "local_file" "k8s_namespace" {
   filename = "${local.config_dir}/01-namespace.yaml"
-  content = templatefile("${path.module}/terraform/templates/namespace.tpl", {
+  content = templatefile("${path.module}/../terraform/templates/namespace.tpl", {
     namespace = var.app_name
   })
   
@@ -65,7 +65,7 @@ resource "local_file" "k8s_namespace" {
 # Kubernetes ConfigMap
 resource "local_file" "k8s_configmap" {
   filename = "${local.config_dir}/02-configmap.yaml"
-  content = templatefile("${path.module}/terraform/templates/configmap.tpl", {
+  content = templatefile("${path.module}/../terraform/templates/configmap.tpl", {
     namespace = var.app_name
     app_name  = var.app_name
   })
@@ -76,7 +76,7 @@ resource "local_file" "k8s_configmap" {
 # Kubernetes Deployment
 resource "local_file" "k8s_deployment" {
   filename = "${local.config_dir}/03-deployment.yaml"
-  content = templatefile("${path.module}/terraform/templates/deployment.tpl", {
+  content = templatefile("${path.module}/../terraform/templates/deployment.tpl", {
     namespace      = var.app_name
     app_name       = var.app_name
     docker_image   = "${var.docker_registry}/${var.app_name}:${var.docker_image_tag}"
@@ -93,7 +93,7 @@ resource "local_file" "k8s_deployment" {
 # Kubernetes Service
 resource "local_file" "k8s_service" {
   filename = "${local.config_dir}/04-service.yaml"
-  content = templatefile("${path.module}/terraform/templates/service.tpl", {
+  content = templatefile("${path.module}/../terraform/templates/service.tpl", {
     namespace = var.app_name
     app_name  = var.app_name
     port      = 8000
@@ -105,7 +105,7 @@ resource "local_file" "k8s_service" {
 # Kubernetes HorizontalPodAutoscaler
 resource "local_file" "k8s_hpa" {
   filename = "${local.config_dir}/05-hpa.yaml"
-  content = templatefile("${path.module}/terraform/templates/hpa.tpl", {
+  content = templatefile("${path.module}/../terraform/templates/hpa.tpl", {
     namespace   = var.app_name
     app_name    = var.app_name
     min_replicas = 2
