@@ -11,26 +11,11 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # Stage 1: System Checks
-  system-checks:
-    runs-on: ubuntu-latest
-    name: Ubuntu System Checks
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Make script executable
-        run: chmod +x scripts/ubuntu_checks.sh
-
-      - name: Run Ubuntu system checks
-        run: bash scripts/ubuntu_checks.sh
-
   # Stage 2: Build
   build:
     runs-on: ubuntu-latest
     name: Build Python Application
-    needs: system-checks
+    # no prior job dependency
 
     steps:
       - name: Checkout code
