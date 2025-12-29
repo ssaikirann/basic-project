@@ -1,19 +1,20 @@
-name: Basic CI Pipeline
+name: Finance Tracker CI/CD Pipeline
 
 on:
   push:
+    branches: [ main, develop ]
   pull_request:
+    branches: [ main, develop ]
 
 jobs:
-  build:
+  # Stage 1: System Checks
+  system-checks:
     runs-on: ubuntu-latest
+    name: Ubuntu System Checks
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Run a simple script
-        run: echo "Hello Sai, your pipeline is running!"
 
       - name: Make script executable
         run: chmod +x scripts/ubuntu_checks.sh
@@ -21,5 +22,128 @@ jobs:
       - name: Run Ubuntu system checks
         run: bash scripts/ubuntu_checks.sh
 
-      - name: List files
-        run: ls -la
+  # Stage 2: Build
+  build:
+    runs-on: ubuntu-latest
+    name: Build Python Application
+    needs: system-checks
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify application imports
+        run: python -c "import finance_tracker; print('✓ Application imports successfully')"
+
+  # Stage 3: Test
+  test:
+    runs-on: ubuntu-latest
+    name: Run Tests with Coverage
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests with pytest
+        run: pytest test_finance_tracker.py -v
+
+      - name: Run tests with coverage
+        run: pytest test_finance_tracker.py --cov=finance_tracker --cov-report=xml --cov-report=html
+
+      - name: Display coverage report
+        run: |
+          echo "=== Coverage Report ==="
+          coverage report
+
+      - name: Upload coverage reports
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          fail_ci_if_error: false
+
+  # Stage 4: Code Quality
+  code-quality:
+    runs-on: ubuntu-latest
+    name: Code Quality Checks
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install linting tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pylint
+
+      - name: Run Flake8 linting
+        run: flake8 finance_tracker.py test_finance_tracker.py --max-line-length=120 --count --statistics
+        continue-on-error: true
+
+      - name: Run Pylint
+        run: pylint finance_tracker.py --exit-zero --disable=C0111
+        continue-on-error: true
+
+  # Stage 5: Deployment Preparation
+  deploy-prep:
+    runs-on: ubuntu-latest
+    name: Deployment Preparation
+    needs: [test, code-quality]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create deployment artifact
+        run: |
+          mkdir -p dist
+          cp finance_tracker.py dist/
+          cp requirements.txt dist/
+          echo "Build completed successfully at $(date)" > dist/BUILD_INFO.txt
+
+      - name: Display artifact contents
+        run: ls -la dist/
+
+      - name: Create release notes
+        run: |
+          echo "=== Finance Tracker Release ===" > RELEASE_NOTES.md
+          echo "Version: 1.0.0" >> RELEASE_NOTES.md
+          echo "Build Date: $(date)" >> RELEASE_NOTES.md
+          echo "Status: Ready for Deployment" >> RELEASE_NOTES.md
+          cat RELEASE_NOTES.md
+
+      - name: List final files
+        run: |
+          echo "=== Deployment Ready ==="
+          ls -la
