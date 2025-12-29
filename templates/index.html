@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker - Home</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <h1>💰 Finance Tracker</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link active">Home</a></li>
+                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
+                <li><a href="/expenses" class="nav-link">Expenses</a></li>
+                <li><a href="/investments" class="nav-link">Investments</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Welcome to Finance Tracker</h2>
+            <p>Manage your expenses and investments efficiently</p>
+        </section>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Expenses</h3>
+                <p class="stat-value">₹{{ "%.2f"|format(total_expenses) }}</p>
+                <p class="stat-label">{{ expenses_count }} transactions</p>
+            </div>
+            <div class="stat-card">
+                <h3>Total Investments</h3>
+                <p class="stat-value">₹{{ "%.2f"|format(total_investments) }}</p>
+                <p class="stat-label">{{ investments_count }} transactions</p>
+            </div>
+            <div class="stat-card">
+                <h3>Net Position</h3>
+                <p class="stat-value">₹{{ "%.2f"|format(total_investments - total_expenses) }}</p>
+                <p class="stat-label">Investments - Expenses</p>
+            </div>
+        </section>
+
+        <section class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="actions-grid">
+                <button class="btn btn-primary" onclick="window.location.href='/expenses'">
+                    📊 Manage Expenses
+                </button>
+                <button class="btn btn-success" onclick="window.location.href='/investments'">
+                    📈 Manage Investments
+                </button>
+                <button class="btn btn-info" onclick="window.location.href='/dashboard'">
+                    📉 View Dashboard
+                </button>
+            </div>
+        </section>
+
+        <section class="info-section">
+            <h3>About Finance Tracker</h3>
+            <p>Track your financial journey with ease:</p>
+            <ul>
+                <li>✅ Record expenses by category</li>
+                <li>✅ Track investment portfolios</li>
+                <li>✅ View detailed analytics</li>
+                <li>✅ Generate financial reports</li>
+                <li>✅ Data persisted in JSON format</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Finance Tracker. All rights reserved.</p>
+    </footer>
+</body>
+</html>
