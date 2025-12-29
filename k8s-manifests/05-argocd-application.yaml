@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: finance-tracker-app
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: 'https://github.com/ssaikirann/basic-project'
+    targetRevision: HEAD
+    path: 'k8s-manifests'
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: finance-tracker
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

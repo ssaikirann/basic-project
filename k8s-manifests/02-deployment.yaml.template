@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finance-tracker
+  namespace: finance-tracker
+  labels:
+    app: finance-tracker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: finance-tracker
+  template:
+    metadata:
+      labels:
+        app: finance-tracker
+    spec:
+      containers:
+      - name: finance-tracker
+        image: IMAGE_PLACEHOLDER
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+          name: http
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        envFrom:
+        - configMapRef:
+            name: finance-tracker-config
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
