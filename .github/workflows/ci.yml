@@ -175,54 +175,42 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
-  # Stage 7: Kubernetes Deployment (Minikube)
-  kubernetes-deploy:
+  # Stage 6b: Push generated manifests for ArgoCD
+  push-manifests:
     runs-on: ubuntu-latest
-    name: Kubernetes Deployment to Minikube
+    name: Generate & Push Manifests (for ArgoCD)
     needs: docker-build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Minikube
-        uses: medyagh/setup-minikube@master
-        with:
-          start-args: '--memory=4096 --cpus=2'
-          minikube-version: latest
-
-      - name: Verify Minikube
+      - name: Set image variable
         run: |
-          minikube status
-          kubectl version --client
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
 
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.0
-
-      - name: Generate Kubernetes manifests with Terraform
+      - name: Generate deployment manifest from template
         run: |
-          cd terraform
-          terraform init -upgrade
-          terraform plan -var="docker_image_tag=main" -out=tfplan
-          terraform apply -auto-approve tfplan
-          cd ..
+          mkdir -p k8s-manifests
+          sed "s|IMAGE_PLACEHOLDER|${IMAGE}|g" k8s-manifests/02-deployment.yaml.template > k8s-manifests/02-deployment.yaml
+          ls -la k8s-manifests
 
-      - name: Make K8s deployment script executable
-        run: chmod +x scripts/k8s_deploy_test.sh
-
-      - name: Deploy to Minikube
-        run: bash scripts/k8s_deploy_test.sh
-
-      - name: Verify Minikube deployment
+      - name: Commit and push updated manifests
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "=== Deployment Status ==="
-          kubectl get all -n finance-tracker
-          echo ""
-          echo "=== Pod Logs ==="
-          kubectl logs -n finance-tracker deployment/finance-tracker --tail=50 || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add k8s-manifests/02-deployment.yaml
+          git commit -m "ci: update k8s manifest image -> ${IMAGE}" || echo "No changes to commit"
+          git push origin HEAD:main || echo "Push failed"
+
+  # Stage 7: Kubernetes Deployment (Minikube)
+  # (Removed) Stage 7: Kubernetes Deployment handled by ArgoCD via updated k8s-manifests
 
   # Stage 8: Deployment Preparation
   deploy-prep:
