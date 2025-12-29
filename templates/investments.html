@@ -36,6 +36,10 @@
                     <input type="number" id="amount" name="amount" placeholder="0.00" step="0.01" required>
                 </div>
                 <div class="form-group">
+                    <label for="currency">Currency:</label>
+                    <select id="currency" name="currency"></select>
+                </div>
+                <div class="form-group">
                     <label for="returns">Expected Returns:</label>
                     <input type="text" id="returns" name="returns" placeholder="e.g., 10% or 5000">
                 </div>
@@ -74,10 +78,11 @@
                 let html = '<table class="transactions-table"><thead><tr><th>Type</th><th>Amount</th><th>Expected Returns</th><th>Note</th><th>Date</th><th>Action</th></tr></thead><tbody>';
                 
                 investments.forEach((investment, index) => {
+                    const cur = investment.currency || 'USD';
                     html += `
                         <tr>
                             <td>${investment.type}</td>
-                            <td>₹${investment.amount.toFixed(2)}</td>
+                            <td>${cur} ${Number(investment.amount).toFixed(2)}</td>
                             <td>${investment.returns}</td>
                             <td>${investment.note}</td>
                             <td>${investment.date}</td>
@@ -103,6 +108,7 @@
             const formData = {
                 type: document.getElementById('type').value,
                 amount: document.getElementById('amount').value,
+                currency: document.getElementById('currency').value,
                 returns: document.getElementById('returns').value,
                 note: document.getElementById('note').value
             };
@@ -147,6 +153,28 @@
 
         // Load investments on page load
         loadInvestments();
+
+        // populate currency selector
+        async function loadCurrencies() {
+            try {
+                const res = await fetch('/api/currencies');
+                const data = await res.json();
+                const sel = document.getElementById('currency');
+                data.symbols.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s;
+                    opt.text = s;
+                    sel.appendChild(opt);
+                });
+                if (data.symbols.includes('USD')) sel.value = 'USD';
+            } catch (e) {
+                console.warn('Could not load currencies', e);
+                const sel = document.getElementById('currency');
+                ['USD','EUR','INR'].forEach(s => { const opt = document.createElement('option'); opt.value=s; opt.text=s; sel.appendChild(opt);});
+            }
+        }
+
+        loadCurrencies();
     </script>
 </body>
 </html>

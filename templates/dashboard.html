@@ -25,14 +25,21 @@
     <main class="container">
         <h2>Financial Dashboard</h2>
 
+        <section class="conversion-controls">
+            <label for="targetCurrency">Show totals in:</label>
+            <select id="targetCurrency"></select>
+            <button id="convertBtn" class="btn btn-info">Convert</button>
+            <span id="convertedTotals" style="margin-left:12px;"></span>
+        </section>
+
         <section class="stats-grid">
             <div class="stat-card">
                 <h3>Total Expenses</h3>
-                <p class="stat-value">₹{{ "%.2f"|format(total_expenses) }}</p>
+                <p class="stat-value">{{ "%.2f"|format(total_expenses) }}</p>
             </div>
             <div class="stat-card">
                 <h3>Total Investments</h3>
-                <p class="stat-value">₹{{ "%.2f"|format(total_investments) }}</p>
+                <p class="stat-value">{{ "%.2f"|format(total_investments) }}</p>
             </div>
             <div class="stat-card">
                 <h3>Expense Count</h3>
@@ -66,7 +73,7 @@
                             {% for expense in expenses[-5:] %}
                                 <li>
                                     <span class="transaction-category">{{ expense.category }}</span>
-                                    <span class="transaction-amount">₹{{ "%.2f"|format(expense.amount) }}</span>
+                                            <span class="transaction-amount">{{ expense.currency or 'USD' }} {{ "%.2f"|format(expense.amount) }}</span>
                                     <span class="transaction-date">{{ expense.date }}</span>
                                 </li>
                             {% endfor %}
@@ -83,7 +90,7 @@
                             {% for investment in investments[-5:] %}
                                 <li>
                                     <span class="transaction-category">{{ investment.type }}</span>
-                                    <span class="transaction-amount">₹{{ "%.2f"|format(investment.amount) }}</span>
+                                    <span class="transaction-amount">{{ investment.currency or 'USD' }} {{ "%.2f"|format(investment.amount) }}</span>
                                     <span class="transaction-date">{{ investment.date }}</span>
                                 </li>
                             {% endfor %}
@@ -158,6 +165,40 @@
             }
         }
 
+        // handle currency conversion controls
+        async function loadCurrencies() {
+            try {
+                const res = await fetch('/api/currencies');
+                const data = await res.json();
+                const sel = document.getElementById('targetCurrency');
+                data.symbols.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s;
+                    opt.text = s;
+                    sel.appendChild(opt);
+                });
+                if (data.symbols.includes('USD')) sel.value = 'USD';
+            } catch (e) {
+                ['USD','EUR','INR'].forEach(s => { const opt = document.createElement('option'); opt.value=s; opt.text=s; document.getElementById('targetCurrency').appendChild(opt);});
+            }
+        }
+
+        document.getElementById('convertBtn').addEventListener('click', async () => {
+            const tgt = document.getElementById('targetCurrency').value;
+            try {
+                const resp = await fetch(`/api/stats?target_currency=${tgt}`);
+                const data = await resp.json();
+                if (data.total_expenses_converted !== undefined) {
+                    document.getElementById('convertedTotals').innerText = `Expenses: ${data.converted_currency} ${data.total_expenses_converted.toFixed(2)} | Investments: ${data.converted_currency} ${data.total_investments_converted.toFixed(2)}`;
+                } else {
+                    document.getElementById('convertedTotals').innerText = data.conversion_error || 'Conversion unavailable';
+                }
+            } catch (e) {
+                document.getElementById('convertedTotals').innerText = 'Conversion error';
+            }
+        });
+
+        loadCurrencies();
         loadDashboard();
     </script>
 </body>

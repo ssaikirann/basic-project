@@ -30,17 +30,17 @@
         <section class="stats-grid">
             <div class="stat-card">
                 <h3>Total Expenses</h3>
-                <p class="stat-value">₹{{ "%.2f"|format(total_expenses) }}</p>
+                <p class="stat-value">{{ "%.2f"|format(total_expenses) }}</p>
                 <p class="stat-label">{{ expenses_count }} transactions</p>
             </div>
             <div class="stat-card">
                 <h3>Total Investments</h3>
-                <p class="stat-value">₹{{ "%.2f"|format(total_investments) }}</p>
+                <p class="stat-value">{{ "%.2f"|format(total_investments) }}</p>
                 <p class="stat-label">{{ investments_count }} transactions</p>
             </div>
             <div class="stat-card">
                 <h3>Net Position</h3>
-                <p class="stat-value">₹{{ "%.2f"|format(total_investments - total_expenses) }}</p>
+                <p class="stat-value">{{ "%.2f"|format(total_investments - total_expenses) }}</p>
                 <p class="stat-label">Investments - Expenses</p>
             </div>
         </section>
