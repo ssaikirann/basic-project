@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: finance-tracker
-        image: ghcr.io/ssaikirann/basic-project:bb1d9ad92dbdc0479e68b97a6bbbfb9fd40e0f7a
+        image: ghcr.io/ssaikirann/basic-project:6a6d9a577ca381dbb48e581b0ace8c17ec1abda0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
