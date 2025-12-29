@@ -7,6 +7,7 @@ from finance_tracker import (
     get_total_expenses, get_total_investments, load_data, 
     EXPENSE_FILE, INVEST_FILE
 )
+from finance_tracker import get_supported_currencies, convert_amount
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -62,7 +63,12 @@ def get_expenses():
 def create_expense():
     data = request.get_json()
     try:
-        expense = add_expense(data['category'], float(data['amount']), data.get('note', ''))
+        expense = add_expense(
+            data['category'],
+            float(data['amount']),
+            data.get('note', ''),
+            data.get('currency', None)
+        )
         return jsonify({'status': 'success', 'data': expense}), 201
     except ValueError as e:
         return jsonify({'status': 'error', 'message': str(e)}), 400
@@ -113,7 +119,8 @@ def create_investment():
             data['type'],
             float(data['amount']),
             data.get('returns', ''),
-            data.get('note', '')
+            data.get('note', ''),
+            data.get('currency', None)
         )
         return jsonify({'status': 'success', 'data': investment}), 201
     except ValueError as e:
@@ -152,7 +159,7 @@ def delete_investment(index):
 def stats():
     expenses = load_data(EXPENSE_FILE)
     investments = load_data(INVEST_FILE)
-    
+    target_currency = request.args.get('target_currency', None)
     category_breakdown = {}
     for expense in expenses:
         category = expense['category']
@@ -164,15 +171,32 @@ def stats():
         inv_type = investment['type']
         amount = investment['amount']
         investment_types[inv_type] = investment_types.get(inv_type, 0) + amount
-    
-    return jsonify({
+    result = {
         'total_expenses': get_total_expenses(),
         'total_investments': get_total_investments(),
         'expense_count': len(expenses),
         'investment_count': len(investments),
         'category_breakdown': category_breakdown,
         'investment_types': investment_types
-    })
+    }
+    if target_currency:
+        # attempt to provide converted totals
+        try:
+            tot_exp_conv = get_total_expenses(target_currency)
+            tot_inv_conv = get_total_investments(target_currency)
+            result['total_expenses_converted'] = tot_exp_conv
+            result['total_investments_converted'] = tot_inv_conv
+            result['converted_currency'] = target_currency.upper()
+        except Exception:
+            result['conversion_error'] = 'Conversion failed or unavailable'
+
+    return jsonify(result)
+
+
+@app.route('/api/currencies')
+def currencies():
+    symbols = get_supported_currencies()
+    return jsonify({'symbols': symbols})
 
 # Error handlers
 @app.errorhandler(404)

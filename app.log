@@ -1,0 +1,107 @@
+ * Serving Flask app 'app'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8000
+ * Running on http://192.168.1.101:8000
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 813-952-605
+192.168.1.101 - - [29/Dec/2025 10:53:22] "GET / HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:53:22] "GET /static/style.css HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:53:23] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+192.168.1.101 - - [29/Dec/2025 10:53:34] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+192.168.1.101 - - [29/Dec/2025 10:53:40] "GET /expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:53:40] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:53:40] "GET /api/expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:53:58] "[35m[1mPOST /api/expenses HTTP/1.1[0m" 201 -
+192.168.1.101 - - [29/Dec/2025 10:53:58] "GET /api/expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:06] "GET /dashboard HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:06] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:54:06] "GET /api/stats HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:08] "GET /investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:08] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:54:08] "GET /api/investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:30] "[35m[1mPOST /api/investments HTTP/1.1[0m" 201 -
+192.168.1.101 - - [29/Dec/2025 10:54:30] "GET /api/investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:35] "GET /dashboard HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:35] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:54:35] "GET /api/stats HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:39] "GET /expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:39] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:54:39] "GET /api/expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:46] "GET /dashboard HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:46] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:54:46] "GET /api/stats HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:47] "GET / HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:47] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:54:58] "GET /dashboard HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:58] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:54:58] "GET /api/stats HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:59] "GET / HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:54:59] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:55:00] "GET /dashboard HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:00] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:55:00] "GET /api/stats HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:01] "GET /expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:01] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:55:01] "GET /api/expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:02] "GET /investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:02] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:55:02] "GET /api/investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:06] "GET /dashboard HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:06] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:55:06] "GET /api/stats HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:13] "GET /expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:13] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:55:13] "GET /api/expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:14] "GET /investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:14] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:55:14] "GET /api/investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:34] "[35m[1mPOST /api/investments HTTP/1.1[0m" 201 -
+192.168.1.101 - - [29/Dec/2025 10:55:34] "GET /api/investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:37] "GET /dashboard HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:37] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:55:37] "GET /api/stats HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:45] "GET /expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:45] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:55:45] "GET /api/expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:47] "GET /investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:47] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 10:55:47] "GET /api/investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:48] "GET / HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 10:55:49] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 11:01:30] "GET / HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:01:30] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 11:01:31] "GET / HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:01:31] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 11:01:32] "GET /expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:01:32] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 11:01:32] "GET /api/expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:01:41] "[35m[1mPOST /api/expenses HTTP/1.1[0m" 201 -
+192.168.1.101 - - [29/Dec/2025 11:01:41] "GET /api/expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:01:44] "GET /dashboard HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:01:44] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 11:01:44] "GET /api/stats HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:01:54] "GET / HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:01:54] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 11:01:59] "GET /dashboard HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:01:59] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 11:01:59] "GET /api/stats HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:02:03] "GET /expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:02:03] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 11:02:03] "GET /api/expenses HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:02:05] "GET /investments HTTP/1.1" 200 -
+192.168.1.101 - - [29/Dec/2025 11:02:05] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+192.168.1.101 - - [29/Dec/2025 11:02:05] "GET /api/investments HTTP/1.1" 200 -
+ * Detected change in '/Users/sangem/repos/github/basic_project/basic-project/finance_tracker.py', reloading
+ * Restarting with stat
+Traceback (most recent call last):
+  File "/Users/sangem/repos/github/basic_project/basic-project/app.py", line 5, in <module>
+    from finance_tracker import (
+    ...<3 lines>...
+    )
+  File "/Users/sangem/repos/github/basic_project/basic-project/finance_tracker.py", line 4, in <module>
+    import requests
+ModuleNotFoundError: No module named 'requests'
