@@ -1,31 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Server Error - Finance Tracker</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>💰 Finance Tracker</h1>
-            </div>
-        </div>
-    </nav>
+{% extends 'base.html' %}
 
-    <main class="container">
-        <div class="error-container">
-            <h1>500</h1>
-            <p>Internal Server Error</p>
-            <p>Something went wrong. Please try again later.</p>
-            <a href="/" class="btn btn-primary">Go Home</a>
-        </div>
-    </main>
+{% block title %}500 - Server Error{% endblock %}
 
-    <footer>
-        <p>&copy; 2025 Finance Tracker. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+{% block content %}
+  <div class="error-container text-center py-5">
+    <h1 class="display-1 text-danger">500</h1>
+    <p class="lead">Internal Server Error</p>
+    <p>Something went wrong. Please try again later.</p>
+    <a href="/" class="btn btn-primary mt-3">Go Home</a>
+  </div>
+{% endblock %}

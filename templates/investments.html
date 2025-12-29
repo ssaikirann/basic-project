@@ -1,180 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investments - Finance Tracker</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>💰 Finance Tracker</h1>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="/" class="nav-link">Home</a></li>
-                <li><a href="/dashboard" class="nav-link">Dashboard</a></li>
-                <li><a href="/expenses" class="nav-link">Expenses</a></li>
-                <li><a href="/investments" class="nav-link active">Investments</a></li>
-            </ul>
-        </div>
-    </nav>
+{% extends 'base.html' %}
 
-    <main class="container">
-        <h2>Manage Investments</h2>
+{% block title %}Investments - Finance Tracker{% endblock %}
 
-        <section class="form-section">
-            <h3>Add New Investment</h3>
-            <form id="investmentForm" class="form">
-                <div class="form-group">
-                    <label for="type">Investment Type:</label>
-                    <input type="text" id="type" name="type" placeholder="e.g., stocks, crypto, mutual fund" required>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount Invested:</label>
-                    <input type="number" id="amount" name="amount" placeholder="0.00" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="currency">Currency:</label>
-                    <select id="currency" name="currency"></select>
-                </div>
-                <div class="form-group">
-                    <label for="returns">Expected Returns:</label>
-                    <input type="text" id="returns" name="returns" placeholder="e.g., 10% or 5000">
-                </div>
-                <div class="form-group">
-                    <label for="note">Note:</label>
-                    <textarea id="note" name="note" placeholder="Optional note" rows="3"></textarea>
-                </div>
-                <button type="submit" class="btn btn-success">Add Investment</button>
-            </form>
-        </section>
+{% block content %}
+  <h2 class="mb-3">Manage Investments</h2>
 
-        <section class="list-section">
-            <h3>Investment List</h3>
-            <div id="investmentsList" class="transactions-table">
-                <p>Loading investments...</p>
-            </div>
-        </section>
-    </main>
+  <div class="row">
+    <div class="col-md-5">
+      <div class="card p-3 mb-3">
+        <h5>Add New Investment</h5>
+        <form id="investmentForm">
+          <div class="mb-2">
+            <label class="form-label" for="type">Investment Type</label>
+            <input class="form-control" type="text" id="type" name="type" placeholder="e.g., stocks, crypto" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="amount">Amount Invested</label>
+            <input class="form-control" type="number" id="amount" name="amount" step="0.01" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="currency">Currency</label>
+            <select id="currency" name="currency" class="form-select"></select>
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="returns">Expected Returns</label>
+            <input class="form-control" type="text" id="returns" name="returns">
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="note">Note</label>
+            <textarea class="form-control" id="note" name="note" rows="2"></textarea>
+          </div>
+          <button class="btn btn-success">Add Investment</button>
+        </form>
+      </div>
+    </div>
 
-    <footer>
-        <p>&copy; 2025 Finance Tracker. All rights reserved.</p>
-    </footer>
+    <div class="col-md-7">
+      <div class="card p-3">
+        <h5>Investment List</h5>
+        <div id="investmentsList">Loading investments...</div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
 
-    <script>
-        // Load and display investments
-        async function loadInvestments() {
-            try {
-                const response = await fetch('/api/investments');
-                const investments = await response.json();
-                
-                if (investments.length === 0) {
-                    document.getElementById('investmentsList').innerHTML = '<p>No investments recorded yet</p>';
-                    return;
-                }
+{% block scripts %}
+<script>
+async function loadInvestments() {
+  try {
+    const response = await fetch('/api/investments');
+    const investments = await response.json();
+    if (investments.length === 0) { document.getElementById('investmentsList').innerHTML = '<p>No investments recorded yet</p>'; return; }
+    let html = '<table class="table"><thead><tr><th>Type</th><th>Amount</th><th>Expected Returns</th><th>Note</th><th>Date</th><th>Action</th></tr></thead><tbody>';
+    investments.forEach((investment, index) => { const cur = investment.currency || 'USD'; html += `<tr><td>${investment.type}</td><td>${cur} ${Number(investment.amount).toFixed(2)}</td><td>${investment.returns}</td><td>${investment.note}</td><td>${investment.date}</td><td><button class="btn btn-danger btn-sm" onclick="deleteInvestment(${index})">Delete</button></td></tr>`; });
+    html += '</tbody></table>';
+    document.getElementById('investmentsList').innerHTML = html;
+  } catch (error) { console.error('Error loading investments:', error); document.getElementById('investmentsList').innerHTML = '<p>Error loading investments</p>'; }
+}
 
-                let html = '<table class="transactions-table"><thead><tr><th>Type</th><th>Amount</th><th>Expected Returns</th><th>Note</th><th>Date</th><th>Action</th></tr></thead><tbody>';
-                
-                investments.forEach((investment, index) => {
-                    const cur = investment.currency || 'USD';
-                    html += `
-                        <tr>
-                            <td>${investment.type}</td>
-                            <td>${cur} ${Number(investment.amount).toFixed(2)}</td>
-                            <td>${investment.returns}</td>
-                            <td>${investment.note}</td>
-                            <td>${investment.date}</td>
-                            <td>
-                                <button class="btn btn-danger btn-sm" onclick="deleteInvestment(${index})">Delete</button>
-                            </td>
-                        </tr>
-                    `;
-                });
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('investmentForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = { type: document.getElementById('type').value, amount: document.getElementById('amount').value, currency: document.getElementById('currency').value, returns: document.getElementById('returns').value, note: document.getElementById('note').value };
+    try {
+      const response = await fetch('/api/investments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(formData) });
+      if (response.ok) { document.getElementById('investmentForm').reset(); loadInvestments(); alert('Investment added successfully!'); } else { alert('Error adding investment'); }
+    } catch (error) { console.error('Error:', error); alert('Error adding investment'); }
+  });
+  loadInvestments();
 
-                html += '</tbody></table>';
-                document.getElementById('investmentsList').innerHTML = html;
-            } catch (error) {
-                console.error('Error loading investments:', error);
-                document.getElementById('investmentsList').innerHTML = '<p>Error loading investments</p>';
-            }
-        }
+  window.deleteInvestment = async function(index) { if (!confirm('Are you sure?')) return; try { const response = await fetch(`/api/investments/${index}`, { method: 'DELETE' }); if (response.ok) { loadInvestments(); alert('Investment deleted successfully!'); } else { alert('Error deleting investment'); } } catch (e) { console.error('Error:', e); alert('Error deleting investment'); } };
 
-        // Add investment
-        document.getElementById('investmentForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+  async function loadCurrencies() { try { const res = await fetch('/api/currencies'); const data = await res.json(); const sel = document.getElementById('currency'); data.symbols.forEach(s => { const opt = document.createElement('option'); opt.value = s; opt.text = s; sel.appendChild(opt); }); if (data.symbols.includes('USD')) sel.value = 'USD'; } catch (e) { console.warn('Could not load currencies', e); const sel = document.getElementById('currency'); ['USD','EUR','INR'].forEach(s => { const opt = document.createElement('option'); opt.value=s; opt.text=s; sel.appendChild(opt);}); } }
 
-            const formData = {
-                type: document.getElementById('type').value,
-                amount: document.getElementById('amount').value,
-                currency: document.getElementById('currency').value,
-                returns: document.getElementById('returns').value,
-                note: document.getElementById('note').value
-            };
-
-            try {
-                const response = await fetch('/api/investments', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-
-                if (response.ok) {
-                    document.getElementById('investmentForm').reset();
-                    loadInvestments();
-                    alert('Investment added successfully!');
-                } else {
-                    alert('Error adding investment');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error adding investment');
-            }
-        });
-
-        // Delete investment
-        async function deleteInvestment(index) {
-            if (!confirm('Are you sure you want to delete this investment?')) return;
-
-            try {
-                const response = await fetch(`/api/investments/${index}`, { method: 'DELETE' });
-                if (response.ok) {
-                    loadInvestments();
-                    alert('Investment deleted successfully!');
-                } else {
-                    alert('Error deleting investment');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error deleting investment');
-            }
-        }
-
-        // Load investments on page load
-        loadInvestments();
-
-        // populate currency selector
-        async function loadCurrencies() {
-            try {
-                const res = await fetch('/api/currencies');
-                const data = await res.json();
-                const sel = document.getElementById('currency');
-                data.symbols.forEach(s => {
-                    const opt = document.createElement('option');
-                    opt.value = s;
-                    opt.text = s;
-                    sel.appendChild(opt);
-                });
-                if (data.symbols.includes('USD')) sel.value = 'USD';
-            } catch (e) {
-                console.warn('Could not load currencies', e);
-                const sel = document.getElementById('currency');
-                ['USD','EUR','INR'].forEach(s => { const opt = document.createElement('option'); opt.value=s; opt.text=s; sel.appendChild(opt);});
-            }
-        }
-
-        loadCurrencies();
-    </script>
-</body>
-</html>
+  loadCurrencies();
+});
+</script>
+{% endblock %}

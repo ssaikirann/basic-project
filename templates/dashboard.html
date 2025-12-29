@@ -1,205 +1,156 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Finance Tracker</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Finance Tracker{% endblock %}
+
+{% block head %}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>💰 Finance Tracker</h1>
+{% endblock %}
+
+{% block content %}
+    <h2 class="mb-3">Financial Dashboard</h2>
+
+    <div class="mb-3 d-flex gap-2 align-items-center">
+        <label for="targetCurrency" class="mb-0">Show totals in:</label>
+        <select id="targetCurrency" class="form-select w-auto"></select>
+        <button id="convertBtn" class="btn btn-info">Convert</button>
+        <div id="convertedTotals" class="ms-3"></div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h6>Total Expenses</h6>
+                <div class="h4">{{ "%.2f"|format(total_expenses) }}</div>
             </div>
-            <ul class="nav-menu">
-                <li><a href="/" class="nav-link">Home</a></li>
-                <li><a href="/dashboard" class="nav-link active">Dashboard</a></li>
-                <li><a href="/expenses" class="nav-link">Expenses</a></li>
-                <li><a href="/investments" class="nav-link">Investments</a></li>
-            </ul>
         </div>
-    </nav>
-
-    <main class="container">
-        <h2>Financial Dashboard</h2>
-
-        <section class="conversion-controls">
-            <label for="targetCurrency">Show totals in:</label>
-            <select id="targetCurrency"></select>
-            <button id="convertBtn" class="btn btn-info">Convert</button>
-            <span id="convertedTotals" style="margin-left:12px;"></span>
-        </section>
-
-        <section class="stats-grid">
-            <div class="stat-card">
-                <h3>Total Expenses</h3>
-                <p class="stat-value">{{ "%.2f"|format(total_expenses) }}</p>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h6>Total Investments</h6>
+                <div class="h4">{{ "%.2f"|format(total_investments) }}</div>
             </div>
-            <div class="stat-card">
-                <h3>Total Investments</h3>
-                <p class="stat-value">{{ "%.2f"|format(total_investments) }}</p>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h6>Expense Count</h6>
+                <div class="h4">{{ expenses|length }}</div>
             </div>
-            <div class="stat-card">
-                <h3>Expense Count</h3>
-                <p class="stat-value">{{ expenses|length }}</p>
+        </div>
+        <div class="col-md-3">
+            <div class="card p-3">
+                <h6>Investment Count</h6>
+                <div class="h4">{{ investments|length }}</div>
             </div>
-            <div class="stat-card">
-                <h3>Investment Count</h3>
-                <p class="stat-value">{{ investments|length }}</p>
-            </div>
-        </section>
+        </div>
+    </div>
 
-        <section class="charts-section">
-            <div class="chart-container">
-                <h3>Expenses by Category</h3>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card p-3">
+                <h6>Expenses by Category</h6>
                 <canvas id="categoryChart"></canvas>
             </div>
-            <div class="chart-container">
-                <h3>Investment Distribution</h3>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card p-3">
+                <h6>Investment Distribution</h6>
                 <canvas id="investmentChart"></canvas>
             </div>
-        </section>
+        </div>
+    </div>
 
-        <section class="recent-section">
-            <h3>Recent Transactions</h3>
-            
-            <div class="transactions-grid">
-                <div class="transaction-list">
-                    <h4>Latest Expenses</h4>
-                    {% if expenses %}
-                        <ul>
-                            {% for expense in expenses[-5:] %}
-                                <li>
-                                    <span class="transaction-category">{{ expense.category }}</span>
-                                            <span class="transaction-amount">{{ expense.currency or 'USD' }} {{ "%.2f"|format(expense.amount) }}</span>
-                                    <span class="transaction-date">{{ expense.date }}</span>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>No expenses recorded</p>
-                    {% endif %}
-                </div>
-
-                <div class="transaction-list">
-                    <h4>Latest Investments</h4>
-                    {% if investments %}
-                        <ul>
-                            {% for investment in investments[-5:] %}
-                                <li>
-                                    <span class="transaction-category">{{ investment.type }}</span>
-                                    <span class="transaction-amount">{{ investment.currency or 'USD' }} {{ "%.2f"|format(investment.amount) }}</span>
-                                    <span class="transaction-date">{{ investment.date }}</span>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>No investments recorded</p>
-                    {% endif %}
-                </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card p-3">
+                <h6>Latest Expenses</h6>
+                {% if expenses %}
+                    <ul class="list-group list-group-flush">
+                        {% for expense in expenses[-5:] %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold">{{ expense.category }}</div>
+                                    <div class="text-muted small">{{ expense.date }}</div>
+                                </div>
+                                <div>{{ expense.currency or 'USD' }} {{ "%.2f"|format(expense.amount) }}</div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No expenses recorded</p>
+                {% endif %}
             </div>
-        </section>
-    </main>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3">
+                <h6>Latest Investments</h6>
+                {% if investments %}
+                    <ul class="list-group list-group-flush">
+                        {% for investment in investments[-5:] %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="fw-bold">{{ investment.type }}</div>
+                                    <div class="text-muted small">{{ investment.date }}</div>
+                                </div>
+                                <div>{{ investment.currency or 'USD' }} {{ "%.2f"|format(investment.amount) }}</div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>No investments recorded</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-    <footer>
-        <p>&copy; 2025 Finance Tracker. All rights reserved.</p>
-    </footer>
-
-    <script>
-        // Fetch stats and render charts
-        async function loadDashboard() {
-            try {
-                const response = await fetch('/api/stats');
-                const stats = await response.json();
-
-                // Expenses by Category Chart
-                if (Object.keys(stats.category_breakdown).length > 0) {
-                    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
-                    new Chart(categoryCtx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: Object.keys(stats.category_breakdown),
-                            datasets: [{
-                                data: Object.values(stats.category_breakdown),
-                                backgroundColor: [
-                                    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
-                                    '#FF9F40', '#FF6384', '#C9CBCF'
-                                ]
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: { position: 'bottom' }
-                            }
-                        }
-                    });
-                }
-
-                // Investment Types Chart
-                if (Object.keys(stats.investment_types).length > 0) {
-                    const investmentCtx = document.getElementById('investmentChart').getContext('2d');
-                    new Chart(investmentCtx, {
-                        type: 'pie',
-                        data: {
-                            labels: Object.keys(stats.investment_types),
-                            datasets: [{
-                                data: Object.values(stats.investment_types),
-                                backgroundColor: [
-                                    '#4BC0C0', '#FF6384', '#36A2EB', '#FFCE56', '#9966FF'
-                                ]
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            plugins: {
-                                legend: { position: 'bottom' }
-                            }
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error loading dashboard:', error);
-            }
+{% block scripts %}
+<script>
+async function loadDashboard() {
+    try {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+        if (Object.keys(stats.category_breakdown).length > 0) {
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(stats.category_breakdown),
+                    datasets: [{ data: Object.values(stats.category_breakdown), backgroundColor: ['#FF6384','#36A2EB','#FFCE56','#4BC0C0','#9966FF','#FF9F40'] }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
         }
-
-        // handle currency conversion controls
-        async function loadCurrencies() {
-            try {
-                const res = await fetch('/api/currencies');
-                const data = await res.json();
-                const sel = document.getElementById('targetCurrency');
-                data.symbols.forEach(s => {
-                    const opt = document.createElement('option');
-                    opt.value = s;
-                    opt.text = s;
-                    sel.appendChild(opt);
-                });
-                if (data.symbols.includes('USD')) sel.value = 'USD';
-            } catch (e) {
-                ['USD','EUR','INR'].forEach(s => { const opt = document.createElement('option'); opt.value=s; opt.text=s; document.getElementById('targetCurrency').appendChild(opt);});
-            }
+        if (Object.keys(stats.investment_types).length > 0) {
+            const investmentCtx = document.getElementById('investmentChart').getContext('2d');
+            new Chart(investmentCtx, { type: 'pie', data: { labels: Object.keys(stats.investment_types), datasets: [{ data: Object.values(stats.investment_types), backgroundColor: ['#4BC0C0','#FF6384','#36A2EB','#FFCE56','#9966FF'] }] }, options: { responsive: true, plugins: { legend: { position: 'bottom' } } } });
         }
+    } catch (error) { console.error('Error loading dashboard:', error); }
+}
 
-        document.getElementById('convertBtn').addEventListener('click', async () => {
-            const tgt = document.getElementById('targetCurrency').value;
-            try {
-                const resp = await fetch(`/api/stats?target_currency=${tgt}`);
-                const data = await resp.json();
-                if (data.total_expenses_converted !== undefined) {
-                    document.getElementById('convertedTotals').innerText = `Expenses: ${data.converted_currency} ${data.total_expenses_converted.toFixed(2)} | Investments: ${data.converted_currency} ${data.total_investments_converted.toFixed(2)}`;
-                } else {
-                    document.getElementById('convertedTotals').innerText = data.conversion_error || 'Conversion unavailable';
-                }
-            } catch (e) {
-                document.getElementById('convertedTotals').innerText = 'Conversion error';
+async function loadCurrencies() {
+    try {
+        const res = await fetch('/api/currencies');
+        const data = await res.json();
+        const sel = document.getElementById('targetCurrency');
+        data.symbols.forEach(s => { const opt = document.createElement('option'); opt.value = s; opt.text = s; sel.appendChild(opt); });
+        if (data.symbols.includes('USD')) sel.value = 'USD';
+    } catch (e) { ['USD','EUR','INR'].forEach(s => { const opt = document.createElement('option'); opt.value=s; opt.text=s; document.getElementById('targetCurrency').appendChild(opt);}); }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('convertBtn').addEventListener('click', async () => {
+        const tgt = document.getElementById('targetCurrency').value;
+        try {
+            const resp = await fetch(`/api/stats?target_currency=${tgt}`);
+            const data = await resp.json();
+            if (data.total_expenses_converted !== undefined) {
+                document.getElementById('convertedTotals').innerText = `Expenses: ${data.converted_currency} ${data.total_expenses_converted.toFixed(2)} | Investments: ${data.converted_currency} ${data.total_investments_converted.toFixed(2)}`;
+            } else {
+                document.getElementById('convertedTotals').innerText = data.conversion_error || 'Conversion unavailable';
             }
-        });
-
-        loadCurrencies();
-        loadDashboard();
-    </script>
-</body>
-</html>
+        } catch (e) { document.getElementById('convertedTotals').innerText = 'Conversion error'; }
+    });
+    loadCurrencies();
+    loadDashboard();
+});
+</script>
+{% endblock %}

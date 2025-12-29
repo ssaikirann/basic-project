@@ -1,31 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page Not Found - Finance Tracker</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">
-                <h1>💰 Finance Tracker</h1>
-            </div>
-        </div>
-    </nav>
+{% extends 'base.html' %}
 
-    <main class="container">
-        <div class="error-container">
-            <h1>404</h1>
-            <p>Page Not Found</p>
-            <p>The page you're looking for doesn't exist.</p>
-            <a href="/" class="btn btn-primary">Go Home</a>
-        </div>
-    </main>
+{% block title %}404 - Not Found{% endblock %}
 
-    <footer>
-        <p>&copy; 2025 Finance Tracker. All rights reserved.</p>
-    </footer>
-</body>
-</html>
+{% block content %}
+  <div class="error-container text-center py-5">
+    <h1 class="display-1 text-danger">404</h1>
+    <p class="lead">Page Not Found</p>
+    <p>The page you're looking for doesn't exist.</p>
+    <a href="/" class="btn btn-primary mt-3">Go Home</a>
+  </div>
+{% endblock %}
