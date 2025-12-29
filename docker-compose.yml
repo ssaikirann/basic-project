@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  finance-tracker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: finance-tracker-app
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./expenses.json:/app/expenses.json
+      - ./investments.json:/app/investments.json
+    restart: unless-stopped
